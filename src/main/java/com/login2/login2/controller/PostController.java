@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.login2.login2.config.AppConstants;
 import com.login2.login2.models.PostDto;
+import com.login2.login2.models.PostResponse;
 import com.login2.login2.services.FileService;
 import com.login2.login2.services.PostService;
 
@@ -67,18 +69,15 @@ public class PostController {
 	}
 	
 	@GetMapping("/posts")
-	public ResponseEntity<List<PostDto>> getAllPost(
-			@RequestParam(value = "pageNumber",defaultValue = "0",required = false)Integer pageNumber,
-			@RequestParam(value = "pageSize",defaultValue = "5",required = false)Integer pageSize,
-			@RequestParam(value = "sortBy",defaultValue = "postId",required = false)String sortBy
+	public ResponseEntity<PostResponse> getAllPost(
+			@RequestParam(value = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+			@RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
+			@RequestParam(value = "sortBy", defaultValue = AppConstants.SORT_BY, required = false) String sortBy,
+			@RequestParam(value = "sortDir", defaultValue = AppConstants.SORT_DIR, required = false) String sortDir) {
 
-			)
-	{
-		List<PostDto> allPost = this.postservice.getAllPost(pageNumber,pageSize,sortBy);
-		
-		return new ResponseEntity<List<PostDto>>(allPost,HttpStatus.OK);
+		PostResponse postResponse = this.postservice.getAllPost(pageNumber, pageSize, sortBy, sortDir);
+		return new ResponseEntity<PostResponse>(postResponse, HttpStatus.OK);
 	}
-	
 	  
 	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
 	@GetMapping("/posts/{postId}")

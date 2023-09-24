@@ -6,6 +6,7 @@ import java.util.Set;
 
 
 public class PostDto {
+private Integer postId;
 private String title;
 private String content;
 private String imageName;
@@ -70,6 +71,15 @@ public void setComments(Set<CommentDto> comments) {
 
 public void setUser(User user) {
 	this.user = user;
+}
+
+
+public Integer getPostId() {
+	return postId;
+}
+
+public void setPostId(Integer postId) {
+	this.postId = postId;
 }
 
 

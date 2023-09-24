@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.login2.login2.models.PostDto;
+import com.login2.login2.models.PostResponse;
 
 
 @Service
@@ -16,7 +17,7 @@ public interface PostService {
 
 	PostDto updatePost(PostDto postDto,Integer postId) throws Exception;
 	
-	List<PostDto> getAllPost(Integer pageNumber, Integer pageSize,String sortBy);
+	PostResponse getAllPost(Integer pageNumber, Integer pageSize,String sortBy,String sortDir);
 	
 	PostDto getPostById(Integer postId) throws Exception;
 	

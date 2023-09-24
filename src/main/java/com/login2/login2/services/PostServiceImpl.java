@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.login2.login2.models.PostDto;
+import com.login2.login2.models.PostResponse;
 import com.login2.login2.models.User;
 import com.login2.login2.entity.Post;
 import com.login2.login2.entity.Category;
@@ -68,18 +69,32 @@ public class PostServiceImpl implements PostService {
 		return this.modelMapper.map(updatedPost, PostDto.class);
 	}
 
-	@Override
-	public List<PostDto> getAllPost(Integer pageNumberr, Integer pageSizee,String sortBy) {
-		int pageSize = pageSizee;
-		int pageNumber =pageNumberr;
-		Pageable p = PageRequest.of(pageNumber, pageSize,Sort.by(sortBy));
-		Page<Post> pagePost = this.postrepo.findAll(p);
-		List<Post> allPost = pagePost.getContent();
-//List<Post> allPost =  this.postrepo.findAll();
-List<PostDto> postDto =  allPost.stream().map((post)->this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
-		
-		return postDto;
-	}
+	 @Override
+	    public PostResponse getAllPost(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
+
+	        Sort sort = (sortDir.equalsIgnoreCase("asc")) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
+	        Pageable p = PageRequest.of(pageNumber, pageSize, sort);
+
+	        Page<Post> pagePost = this.postrepo.findAll(p);
+
+	        List<Post> allPosts = pagePost.getContent();
+
+	        List<PostDto> postDtos = allPosts.stream().map((post) -> this.modelMapper.map(post, PostDto.class))
+	                .collect(Collectors.toList());
+
+	        PostResponse postResponse = new PostResponse();
+
+	        postResponse.setContent(postDtos);
+	        postResponse.setPageNumber(pagePost.getNumber());
+	        postResponse.setPageSize(pagePost.getSize());
+	        postResponse.setTotalElements(pagePost.getTotalElements());
+
+	        postResponse.setTotalPages(pagePost.getTotalPages());
+	        postResponse.setLastPage(pagePost.isLast());
+
+	        return postResponse;
+	    }
 
 	@Override
 	public PostDto getPostById(Integer postId) throws Exception {
